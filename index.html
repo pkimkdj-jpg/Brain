@@ -65,4 +65,192 @@
 
   <button class="Hotspot" slot="hotspot-3"
     data-surface="4 0 27376 27377 27375 164.132 -11.268 -151.864"
-    data-
+    data-visibility-attribute="visible"
+    data-orbit="60deg 60deg 2m">
+  </button>
+
+  <button class="Hotspot" slot="hotspot-5"
+    data-surface="3 0 62227 62233 62239 31.854 -12.250 -18.603"
+    data-visibility-attribute="visible"
+    data-orbit="0deg 75deg 1.5m">
+  </button>
+
+  <button class="Hotspot" slot="hotspot-8"
+    data-surface="1 0 33456 33457 33455 110.097 -60.006 -49.092"
+    data-visibility-attribute="visible"
+    data-orbit="200deg 110deg 2m">
+  </button>
+
+</model-viewer>
+
+<script>
+  const model = document.getElementById('brainModel');
+  const hotspots = document.querySelectorAll('.Hotspot');
+  const defaultOrbit = '0deg 75deg 5m';
+  let activeHotspot = null;
+
+  hotspots.forEach(hotspot => {
+    hotspot.addEventListener('click', () => {
+      const orbit = hotspot.getAttribute('data-orbit');
+
+      if (activeHotspot === hotspot) {
+        // Click same hotspot again — zoom back out to default
+        model.cameraOrbit = defaultOrbit;
+        model.setAttribute('auto-rotate', '');
+        activeHotspot = null;
+      } else {
+        // Zoom into this hotspot's region
+        model.removeAttribute('auto-rotate');
+        model.cameraOrbit = orbit;
+        activeHotspot = hotspot;
+      }
+    });
+  });
+
+  // Click background to reset
+  model.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('Hotspot')) {
+      model.cameraOrbit = defaultOrbit;
+      model.setAttribute('auto-rotate', '');
+      activeHotspot = null;
+    }
+  });
+</script>
+
+<script>
+const canvas = document.getElementById('c');
+const gl = canvas.getContext('webgl');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  gl.viewport(0, 0, canvas.width, canvas.height);
+}
+resize();
+window.addEventListener('resize', resize);
+
+const vertSrc = `
+  attribute vec2 a_pos;
+  void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+`;
+
+const fragSrc = `
+  precision highp float;
+  uniform float u_time;
+  uniform vec2 u_res;
+  uniform vec2 u_ripples[8];
+  uniform float u_ripple_times[8];
+  uniform int u_ripple_count;
+
+  void main() {
+    vec2 uv = gl_FragCoord.xy / u_res;
+    vec2 aspect = vec2(u_res.x / u_res.y, 1.0);
+
+    float wave = 0.0;
+
+    vec2 p = uv * aspect;
+    wave += sin(p.x * 3.0 + u_time * 0.3) * 0.012;
+    wave += sin(p.y * 2.5 + u_time * 0.2) * 0.010;
+    wave += sin((p.x + p.y) * 2.0 + u_time * 0.25) * 0.008;
+    wave += sin(p.x * 6.0 - u_time * 0.4) * 0.005;
+    wave += sin(p.y * 5.0 + u_time * 0.15) * 0.004;
+
+    for (int i = 0; i < 8; i++) {
+      if (i >= u_ripple_count) break;
+      vec2 rp = u_ripples[i] * aspect;
+      vec2 cp = uv * aspect;
+      float dist = length(cp - rp);
+      float age = u_ripple_times[i];
+      float radius = age * 1.2;
+      float ring = exp(-pow((dist - radius) * 18.0, 2.0));
+      float fade = exp(-age * 1.2);
+      wave += 0.04 * ring * fade * sin(dist * 40.0 - age * 8.0);
+    }
+
+    vec3 deep    = vec3(0.01, 0.05, 0.12);
+    vec3 surface = vec3(0.04, 0.18, 0.35);
+    vec3 shimmer = vec3(0.15, 0.45, 0.65);
+
+    float t = uv.y + wave * 2.0;
+    vec3 col = mix(deep, surface, smoothstep(0.0, 0.6, t));
+    col = mix(col, shimmer, smoothstep(0.5, 1.0, t + wave * 3.0));
+    col += vec3(0.05, 0.12, 0.18) * smoothstep(0.01, 0.03, wave);
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+function compileShader(type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  return s;
+}
+
+const prog = gl.createProgram();
+gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, vertSrc));
+gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, fragSrc));
+gl.linkProgram(prog);
+gl.useProgram(prog);
+
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(prog, 'a_pos');
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+const uTime        = gl.getUniformLocation(prog, 'u_time');
+const uRes         = gl.getUniformLocation(prog, 'u_res');
+const uRipples     = gl.getUniformLocation(prog, 'u_ripples');
+const uRippleTimes = gl.getUniformLocation(prog, 'u_ripple_times');
+const uRippleCount = gl.getUniformLocation(prog, 'u_ripple_count');
+
+let ripples = [];
+const MAX = 8;
+
+function addRipple(x, y) {
+  ripples.push({ x: x / canvas.width, y: 1.0 - y / canvas.height, t: 0 });
+  if (ripples.length > MAX) ripples.shift();
+}
+
+canvas.addEventListener('click', e => addRipple(e.clientX, e.clientY));
+canvas.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  addRipple(t.clientX, t.clientY);
+});
+
+setTimeout(() => addRipple(canvas.width * 0.3, canvas.height * 0.5), 500);
+setTimeout(() => addRipple(canvas.width * 0.7, canvas.height * 0.4), 2000);
+setTimeout(() => addRipple(canvas.width * 0.5, canvas.height * 0.6), 4000);
+
+let last = 0;
+function frame(ts) {
+  const dt = Math.min((ts - last) / 1000, 0.05);
+  last = ts;
+
+  ripples.forEach(r => r.t += dt);
+  ripples = ripples.filter(r => r.t < 4.0);
+
+  const rFlat = new Float32Array(MAX * 2).fill(0);
+  const tFlat = new Float32Array(MAX).fill(0);
+  ripples.forEach((r, i) => {
+    rFlat[i*2] = r.x;
+    rFlat[i*2+1] = r.y;
+    tFlat[i] = r.t;
+  });
+
+  gl.uniform1f(uTime, ts / 1000);
+  gl.uniform2f(uRes, canvas.width, canvas.height);
+  gl.uniform2fv(uRipples, rFlat);
+  gl.uniform1fv(uRippleTimes, tFlat);
+  gl.uniform1i(uRippleCount, ripples.length);
+
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+
+</body>
+</html>

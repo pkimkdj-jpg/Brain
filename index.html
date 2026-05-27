@@ -3,16 +3,9 @@
 <head>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; width: 100vw; height: 100vh; background: transparent; }
-  model-viewer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    --poster-color: transparent;
-  }
+  body { background: transparent; overflow: hidden; width: 100vw; height: 100vh; }
+  canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+  model-viewer { position: relative; z-index: 1; width: 100%; height: 100vh; background: transparent; }
 
   .Hotspot {
     border: none;
@@ -41,6 +34,8 @@
 </head>
 <body>
 
+<canvas id="c"></canvas>
+
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <model-viewer
@@ -49,17 +44,18 @@
   alt="3D Brain Model"
   auto-rotate
   auto-rotate-delay="1000"
-  rotation-per-second="15deg"
+  rotation-per-second="20deg"
   camera-controls
   interaction-prompt="none"
-  camera-orbit="0deg 75deg 6m"
+  camera-orbit="0deg 75deg 5m"
   camera-target="0m 0m 0m"
+  disable-tap="true"
   min-camera-orbit="auto auto 1m"
-  max-camera-orbit="auto auto 6m"
+  max-camera-orbit="auto auto 8m"
   tone-mapping="neutral"
-  shadow-intensity="0"
+  shadow-intensity="1"
   exposure="0.89"
-  style="width:100%; height:100vh; background:transparent; --poster-color:transparent;">
+  style="width:100%; height:100vh; background:transparent;">
 
   <button class="Hotspot" slot="hotspot-1"
     data-surface="5 0 21784 21803 21802 323.157 -270.663 -51.494"
@@ -96,11 +92,14 @@
   hotspots.forEach(hotspot => {
     hotspot.addEventListener('click', () => {
       const orbit = hotspot.getAttribute('data-orbit');
+
       if (activeHotspot === hotspot) {
+        // Click same hotspot again — zoom back out to default
         model.cameraOrbit = defaultOrbit;
         model.setAttribute('auto-rotate', '');
         activeHotspot = null;
       } else {
+        // Zoom into this hotspot's region
         model.removeAttribute('auto-rotate');
         model.cameraOrbit = orbit;
         activeHotspot = hotspot;
@@ -108,10 +107,13 @@
     });
   });
 
-  model.addEventListener('dblclick', () => {
-    model.cameraOrbit = defaultOrbit;
-    model.setAttribute('auto-rotate', '');
-    activeHotspot = null;
+  // Click background to reset
+  model.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('Hotspot')) {
+      model.cameraOrbit = defaultOrbit;
+      model.setAttribute('auto-rotate', '');
+      activeHotspot = null;
+    }
   });
 </script>
 

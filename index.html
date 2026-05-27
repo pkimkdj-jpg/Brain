@@ -3,16 +3,15 @@
 <head>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; width: 100vw; height: 100vh; background: #0a0812; }
-  canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+  body { overflow: hidden; width: 100vw; height: 100vh; background: transparent; }
   model-viewer {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
     background: transparent;
+    --poster-color: transparent;
   }
 
   .Hotspot {
@@ -42,8 +41,6 @@
 </head>
 <body>
 
-<canvas id="c"></canvas>
-
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <model-viewer
@@ -62,7 +59,7 @@
   tone-mapping="neutral"
   shadow-intensity="1"
   exposure="0.89"
-  style="width:100%; height:100vh; background:transparent;">
+  style="width:100%; height:100vh; background:transparent; --poster-color:transparent;">
 
   <button class="Hotspot" slot="hotspot-1"
     data-surface="5 0 21784 21803 21802 323.157 -270.663 -51.494"
@@ -116,68 +113,6 @@
     model.setAttribute('auto-rotate', '');
     activeHotspot = null;
   });
-</script>
-
-<script>
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-const colors = {
-  dark1:  [8,   8,  16],
-  dark2:  [12,  10, 22],
-  dark3:  [10,  8,  18],
-  mid1:   [28,  20, 48],
-  mid2:   [35,  18, 42],
-  light1: [65,  38, 72],
-};
-
-const blobs = [
-  { x: 0.2, y: 0.3, r: 0.5,  color: colors.dark2,  speed: 0.00008, oy: 0.00006 },
-  { x: 0.8, y: 0.7, r: 0.45, color: colors.mid1,   speed: 0.00007, oy: 0.00005 },
-  { x: 0.5, y: 0.5, r: 0.35, color: colors.dark3,  speed: 0.00006, oy: 0.00005 },
-  { x: 0.1, y: 0.8, r: 0.3,  color: colors.mid2,   speed: 0.00009, oy: 0.00007 },
-  { x: 0.9, y: 0.2, r: 0.25, color: colors.light1, speed: 0.00005, oy: 0.00004 },
-  { x: 0.6, y: 0.1, r: 0.2,  color: colors.mid1,   speed: 0.00007, oy: 0.00003 },
-];
-
-function frame(ts) {
-  const w = canvas.width;
-  const h = canvas.height;
-
-  ctx.fillStyle = `rgb(${colors.dark1.join(',')})`;
-  ctx.fillRect(0, 0, w, h);
-
-  blobs.forEach((blob, i) => {
-    const bx = (blob.x + Math.sin(ts * blob.speed + i * 1.3) * 0.15) * w;
-    const by = (blob.y + Math.cos(ts * blob.oy * 1000 + i * 2.1) * 0.12) * h;
-    const br = blob.r * Math.max(w, h);
-
-    const grad = ctx.createRadialGradient(bx, by, 0, bx, by, br);
-    const [r, g, b] = blob.color;
-
-    const isLight = blob.color === colors.light1;
-    const isMid   = blob.color === colors.mid1 || blob.color === colors.mid2;
-    const alpha   = isLight ? 0.18 : isMid ? 0.35 : 0.45;
-
-    grad.addColorStop(0,   `rgba(${r},${g},${b},${alpha})`);
-    grad.addColorStop(0.5, `rgba(${r},${g},${b},${alpha * 0.4})`);
-    grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
-
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-  });
-
-  requestAnimationFrame(frame);
-}
-
-requestAnimationFrame(frame);
 </script>
 
 </body>

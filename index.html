@@ -6,10 +6,11 @@
   body { background: transparent; overflow: show; width: 100vw; height: 100vh; }
   canvas { position: fixed; top: 0; left: 0; z-index: 0; }
   model-viewer {
-    position: relative;
+    position: fixed;
+    top: 0;
+    right: 0;
     z-index: 1;
-    width: 100%;
-    margin-right: 60%;
+    width: 80%;
     height: 100vh;
     background: transparent;
   }
@@ -123,7 +124,7 @@
   max-camera-orbit="auto auto 4m"
   shadow-intensity="3"
   reveal="auto"
-  style="width:80%; margin-right:20%; height:100vh; background:transparent;">
+  style="width:80%; height:100vh; background:transparent;">
 
   <button class="Hotspot" slot="hotspot-1"
     data-surface="5 0 21784 21803 21802 323.157 -270.663 -51.494"

@@ -237,7 +237,7 @@
   });
 
   model.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('Hotspot')) {
+    if (!e.target.closest('.Hotspot')) {
       reset();
     }
   });

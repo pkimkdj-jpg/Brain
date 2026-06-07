@@ -55,7 +55,7 @@
     font-size: 24px;
     font-weight: 700;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-    pointer-events: none;
+    pointer-events: auto;
   }
 
   .overlay {
@@ -242,4 +242,10 @@
     }
   });
 
-  ove
+  overlay.addEventListener('click', () => {
+    reset();
+  });
+</script>
+
+</body>
+</html>

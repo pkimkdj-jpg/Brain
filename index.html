@@ -223,7 +223,8 @@
   }
 
   hotspots.forEach(hotspot => {
-    hotspot.addEventListener('click', () => {
+    hotspot.addEventListener('click', (e) => {
+      e.stopPropagation();
       const orbit = hotspot.getAttribute('data-orbit');
       if (activeHotspot === hotspot) {
         reset();

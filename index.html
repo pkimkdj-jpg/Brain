@@ -221,7 +221,7 @@ const MARKER_GAP = 80;
 let activeHotspot = null;
 
 function positionCardMarker() {
-  const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
+  const targetLeft = innerWidth * 0.54 - MARKER_SIZE / 2;
   const targetTop = Math.min(innerHeight - MARKER_SIZE - 8, innerHeight * 0.40 + card.offsetHeight / 2 + MARKER_GAP);
   cardMarker.style.left = targetLeft + 'px';
   cardMarker.style.top = targetTop + 'px';

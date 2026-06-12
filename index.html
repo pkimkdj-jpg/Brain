@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: transparent; overflow: hidden; width: 100vw; height: 100vh; }
@@ -15,22 +17,25 @@ model-viewer {
   background: transparent;
   overflow: visible;
 }
+
+/* Hotspots: solid fill instead of backdrop-filter blur.
+   Each hotspot gets its own compositor layer so hover scaling
+   stays on the GPU and never triggers layout/paint. */
 .Hotspot {
-  border: none;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(245, 245, 245, 0.92);
   transition: transform 0.2s ease, background 0.2s ease;
   padding: 0;
   position: relative;
+  transform: translateZ(0);
+  will-change: transform;
 }
 .Hotspot:hover {
-  transform: scale(1.3);
+  transform: translateZ(0) scale(1.3);
   background: rgba(255, 255, 255, 1);
 }
 .Hotspot[data-visibility-attribute="hidden"] {
@@ -53,6 +58,8 @@ model-viewer {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   pointer-events: auto;
 }
+
+/* Overlay: solid dim, own layer, opacity-only transition. */
 .overlay {
   position: fixed;
   top: 0;
@@ -64,11 +71,17 @@ model-viewer {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  transform: translateZ(0);
+  will-change: opacity;
 }
 .overlay.visible {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Info card: backdrop-filter removed. A solid translucent dark fill
+   reads almost identical over the dimmed overlay but costs nothing
+   per frame. Transition stays on transform + opacity only. */
 .info-card {
   position: fixed;
   top: 50%;
@@ -80,11 +93,9 @@ model-viewer {
   overflow-y: auto;
   padding: 60px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(28, 28, 30, 0.78);
   border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -92,6 +103,7 @@ model-viewer {
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease;
   font-family: -apple-system, system-ui, sans-serif;
+  will-change: transform, opacity;
 }
 .info-card.visible {
   opacity: 1;
@@ -120,7 +132,7 @@ model-viewer {
   alt="3D Brain Model"
   auto-rotate
   auto-rotate-delay="1000"
-  rotation-per-second="15deg"
+  rotation-per-second="12deg"
   camera-controls
   tone-mapping="neutral"
   interaction-prompt="none"
@@ -129,9 +141,10 @@ model-viewer {
   disable-tap="true"
   min-camera-orbit="auto auto 2m"
   max-camera-orbit="auto auto 4m"
-  shadow-intensity=".4"
-  shadow-softness="1"
+  shadow-intensity="0.3"
+  shadow-softness="0.6"
   reveal="auto"
+  power-preference="high-performance"
   style="height:100vh; background:transparent;">
 
   <button class="Hotspot" slot="hotspot-1"
@@ -208,6 +221,7 @@ function hideCard() {
 
 function reset() {
   model.cameraOrbit = defaultOrbit;
+  // Resume rotation only when no card is open.
   model.setAttribute('auto-rotate', '');
   activeHotspot = null;
   hideCard();
@@ -220,6 +234,7 @@ hotspots.forEach(hotspot => {
     if (activeHotspot === hotspot) {
       reset();
     } else {
+      // Pause rotation while reading — frees the GPU entirely.
       model.removeAttribute('auto-rotate');
       model.cameraOrbit = orbit;
       activeHotspot = hotspot;
@@ -236,6 +251,17 @@ model.addEventListener('click', (e) => {
 
 overlay.addEventListener('click', () => {
   reset();
+});
+
+// Pause WebGL rendering entirely when the page/tab isn't visible.
+// On kiosk hardware this prevents wasted GPU cycles if the panel
+// ever backgrounds the page.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    model.removeAttribute('auto-rotate');
+  } else if (!activeHotspot) {
+    model.setAttribute('auto-rotate', '');
+  }
 });
 </script>
 </body>

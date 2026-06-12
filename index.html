@@ -18,8 +18,8 @@ model-viewer#brainModel {
 .Hotspot {
   border: none;
   cursor: pointer;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   background: transparent;
   padding: 0;
   position: relative;
@@ -118,7 +118,12 @@ model-viewer#brainModel {
   width: 120px;
   height: 120px;
   z-index: 11;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15);
   --poster-color: transparent;
   pointer-events: none;
   opacity: 0;
@@ -134,7 +139,7 @@ model-viewer#brainModel {
   alt="3D Brain Model"
   auto-rotate
   auto-rotate-delay="1000"
-  rotation-per-second="15deg"
+  rotation-per-second="10deg"
   camera-controls
   tone-mapping="neutral"
   interaction-prompt="none"
@@ -212,12 +217,12 @@ const cardBody = document.getElementById('cardBody');
 const cardMarker = document.getElementById('cardMarker');
 const defaultOrbit = '0deg 75deg 4m';
 const MARKER_SIZE = 120;
-const MARKER_GAP = 40;
+const MARKER_GAP = 16;
 let activeHotspot = null;
 
 function positionCardMarker() {
-  const targetLeft = innerWidth * 0.4 - MARKER_SIZE / 2;
-  const targetTop = Math.max(8, (innerHeight - card.offsetHeight) / 2 - MARKER_SIZE - MARKER_GAP);
+  const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
+  const targetTop = Math.min(innerHeight - MARKER_SIZE - 8, (innerHeight + card.offsetHeight) / 2 + MARKER_GAP);
   cardMarker.style.left = targetLeft + 'px';
   cardMarker.style.top = targetTop + 'px';
   return { targetLeft, targetTop };

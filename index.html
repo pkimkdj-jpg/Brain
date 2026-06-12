@@ -212,11 +212,11 @@ const cardBody = document.getElementById('cardBody');
 const cardMarker = document.getElementById('cardMarker');
 const defaultOrbit = '0deg 75deg 4m';
 const MARKER_SIZE = 120;
-const MARKER_GAP = 16;
+const MARKER_GAP = 40;
 let activeHotspot = null;
 
 function positionCardMarker() {
-  const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
+  const targetLeft = innerWidth * 0.4 - MARKER_SIZE / 2;
   const targetTop = Math.max(8, (innerHeight - card.offsetHeight) / 2 - MARKER_SIZE - MARKER_GAP);
   cardMarker.style.left = targetLeft + 'px';
   cardMarker.style.top = targetTop + 'px';

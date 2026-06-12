@@ -18,15 +18,12 @@ model-viewer#brainModel {
 .Hotspot {
   border: none;
   cursor: pointer;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   background: transparent;
   padding: 0;
   position: relative;
-  transition: transform 0.2s ease, opacity 0.3s ease;
-}
-.Hotspot:hover {
-  transform: scale(1.3);
+  transition: opacity 0.3s ease;
 }
 .Hotspot[data-visibility-attribute="hidden"] {
   opacity: 0;
@@ -39,6 +36,10 @@ model-viewer#brainModel {
   --poster-color: transparent;
   pointer-events: none;
   display: block;
+  transition: opacity 0.25s ease;
+}
+.Hotspot.marker-away .marker {
+  opacity: 0;
 }
 .hotspot-tag {
   position: absolute;
@@ -112,6 +113,16 @@ model-viewer#brainModel {
   color: #ffffff;
   line-height: 1.5;
 }
+#cardMarker {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  z-index: 11;
+  background: transparent;
+  --poster-color: transparent;
+  pointer-events: none;
+  opacity: 0;
+}
 </style>
 </head>
 <body>
@@ -144,7 +155,7 @@ model-viewer#brainModel {
     data-orbit="0deg 100deg 2m"
     data-title="Title_1"
     data-body="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
-    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"></model-viewer>
+    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"><div slot="progress-bar"></div></model-viewer>
     <span class="hotspot-tag">Tap me</span>
   </button>
 
@@ -155,7 +166,7 @@ model-viewer#brainModel {
     data-orbit="60deg 60deg 2m"
     data-title="Title_2"
     data-body="Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.">
-    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"></model-viewer>
+    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"><div slot="progress-bar"></div></model-viewer>
     <span class="hotspot-tag">Tap me</span>
   </button>
 
@@ -166,7 +177,7 @@ model-viewer#brainModel {
     data-orbit="0deg 75deg 1.5m"
     data-title="Title_3"
     data-body="Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.">
-    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"></model-viewer>
+    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"><div slot="progress-bar"></div></model-viewer>
     <span class="hotspot-tag">Tap me</span>
   </button>
 
@@ -177,7 +188,7 @@ model-viewer#brainModel {
     data-orbit="200deg 110deg 2m"
     data-title="Title_4"
     data-body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">
-    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"></model-viewer>
+    <model-viewer class="marker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"><div slot="progress-bar"></div></model-viewer>
     <span class="hotspot-tag">Tap me</span>
   </button>
 
@@ -189,6 +200,7 @@ model-viewer#brainModel {
   <div class="card-title" id="cardTitle"></div>
   <div class="card-body" id="cardBody"></div>
 </div>
+<model-viewer id="cardMarker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 105%"><div slot="progress-bar"></div></model-viewer>
 
 <script>
 const model = document.getElementById('brainModel');
@@ -197,8 +209,45 @@ const card = document.getElementById('infoCard');
 const overlay = document.getElementById('overlay');
 const cardTitle = document.getElementById('cardTitle');
 const cardBody = document.getElementById('cardBody');
+const cardMarker = document.getElementById('cardMarker');
 const defaultOrbit = '0deg 75deg 4m';
+const MARKER_SIZE = 120;
+const MARKER_GAP = 16;
 let activeHotspot = null;
+
+function positionCardMarker() {
+  const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
+  const targetTop = Math.max(8, (innerHeight - card.offsetHeight) / 2 - MARKER_SIZE - MARKER_GAP);
+  cardMarker.style.left = targetLeft + 'px';
+  cardMarker.style.top = targetTop + 'px';
+  return { targetLeft, targetTop };
+}
+
+function flyMarkerFrom(hotspot) {
+  const srcMarker = hotspot.querySelector('.marker');
+  const r = srcMarker.getBoundingClientRect();
+  const { targetLeft, targetTop } = positionCardMarker();
+  const dx = (r.left + r.width / 2) - (targetLeft + MARKER_SIZE / 2);
+  const dy = (r.top + r.height / 2) - (targetTop + MARKER_SIZE / 2);
+  const startScale = r.width / MARKER_SIZE;
+
+  hotspot.classList.add('marker-away');
+  cardMarker.style.transition = 'none';
+  cardMarker.style.transform = 'translate(' + dx + 'px, ' + dy + 'px) scale(' + startScale + ')';
+  cardMarker.style.opacity = '1';
+  cardMarker.getBoundingClientRect();
+  cardMarker.style.transition = 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease';
+  cardMarker.style.transform = 'none';
+  cardMarker.setAttribute('rotation-per-second', '25deg');
+  cardMarker.setAttribute('auto-rotate-delay', '0');
+  cardMarker.setAttribute('auto-rotate', '');
+}
+
+function dismissCardMarker() {
+  cardMarker.style.opacity = '0';
+  cardMarker.removeAttribute('auto-rotate');
+  hotspots.forEach(h => h.classList.remove('marker-away'));
+}
 
 function showCard(hotspot) {
   cardTitle.textContent = hotspot.getAttribute('data-title') || '';
@@ -206,11 +255,13 @@ function showCard(hotspot) {
   card.scrollTop = 0;
   card.classList.add('visible');
   overlay.classList.add('visible');
+  flyMarkerFrom(hotspot);
 }
 
 function hideCard() {
   card.classList.remove('visible');
   overlay.classList.remove('visible');
+  dismissCardMarker();
 }
 
 function reset() {
@@ -236,32 +287,23 @@ hotspots.forEach(hotspot => {
 });
 
 /* Deferred marker loading: wait until the brain is fully loaded, then load
-   the four markers one at a time (200ms apart) so parse/upload/shader work
-   never competes with the brain's own warm-up. */
+   the five marker viewers one at a time so warm-up work never competes
+   with the brain's own loading. */
 let markersLoaded = false;
 function loadMarkers() {
   if (markersLoaded) return;
   markersLoaded = true;
-  document.querySelectorAll('.Hotspot .marker').forEach((marker, i) => {
+  document.querySelectorAll('model-viewer[data-src]').forEach((m, i) => {
     setTimeout(() => {
-      marker.setAttribute('src', marker.dataset.src);
+      m.setAttribute('src', m.dataset.src);
     }, i * 200);
   });
 }
 model.addEventListener('load', loadMarkers, { once: true });
-setTimeout(loadMarkers, 8000); /* safety net if the load event never fires */
+setTimeout(loadMarkers, 8000);
 
-/* Markers are static (zero render cost); spin only while hovered. */
-document.querySelectorAll('.Hotspot .marker').forEach(marker => {
-  const btn = marker.closest('.Hotspot');
-  btn.addEventListener('mouseenter', () => {
-    marker.setAttribute('rotation-per-second', '40deg');
-    marker.setAttribute('auto-rotate-delay', '0');
-    marker.setAttribute('auto-rotate', '');
-  });
-  btn.addEventListener('mouseleave', () => {
-    marker.removeAttribute('auto-rotate');
-  });
+addEventListener('resize', () => {
+  if (activeHotspot) positionCardMarker();
 });
 
 model.addEventListener('click', (e) => {

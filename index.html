@@ -18,8 +18,8 @@ model-viewer#brainModel {
 .Hotspot {
   border: none;
   cursor: pointer;
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   background: transparent;
   padding: 0;
   position: relative;
@@ -75,12 +75,12 @@ model-viewer#brainModel {
 }
 .info-card {
   position: fixed;
-  top: 50%;
+  top: 40%;
   left: 52%;
   transform: translate(-50%, -50%) translateY(20px);
   z-index: 10;
   width: 1000px;
-  max-height: calc(100vh - 128px);
+  max-height: calc(80vh - 64px);
   overflow-y: auto;
   padding: 60px;
   border-radius: 20px;
@@ -217,12 +217,12 @@ const cardBody = document.getElementById('cardBody');
 const cardMarker = document.getElementById('cardMarker');
 const defaultOrbit = '0deg 75deg 4m';
 const MARKER_SIZE = 100;
-const MARKER_GAP = 120;
+const MARKER_GAP = 140;
 let activeHotspot = null;
 
 function positionCardMarker() {
   const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
-  const targetTop = Math.min(innerHeight - MARKER_SIZE - 8, (innerHeight + card.offsetHeight) / 2 + MARKER_GAP);
+  const targetTop = Math.min(innerHeight - MARKER_SIZE - 8, innerHeight * 0.40 + card.offsetHeight / 2 + MARKER_GAP);
   cardMarker.style.left = targetLeft + 'px';
   cardMarker.style.top = targetTop + 'px';
   return { targetLeft, targetTop };

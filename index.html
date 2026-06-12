@@ -30,8 +30,8 @@ model-viewer#brainModel {
   pointer-events: none;
 }
 .Hotspot .marker {
-  width: 140%;
-  height: 140%;
+  width: 108%;
+  height: 108%;
   background: transparent;
   --poster-color: transparent;
   pointer-events: none;
@@ -205,7 +205,7 @@ model-viewer#brainModel {
   <div class="card-title" id="cardTitle"></div>
   <div class="card-body" id="cardBody"></div>
 </div>
-<model-viewer id="cardMarker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 240%" min-camera-orbit="auto auto 240%" max-camera-orbit="auto auto 240%"><div slot="progress-bar"></div></model-viewer>
+<model-viewer id="cardMarker" data-src="Ignition-Start_Symbol.glb" interaction-prompt="none" disable-zoom disable-pan disable-tap shadow-intensity="0" camera-orbit="0deg 80deg 250%" min-camera-orbit="auto auto 250%" max-camera-orbit="auto auto 250%"><div slot="progress-bar"></div></model-viewer>
 
 <script>
 const model = document.getElementById('brainModel');
@@ -216,12 +216,12 @@ const cardTitle = document.getElementById('cardTitle');
 const cardBody = document.getElementById('cardBody');
 const cardMarker = document.getElementById('cardMarker');
 const defaultOrbit = '0deg 75deg 4m';
-const MARKER_SIZE = 140;
+const MARKER_SIZE = 250;
 const MARKER_GAP = 80;
 let activeHotspot = null;
 
 function positionCardMarker() {
-  const targetLeft = innerWidth * 0.54 - MARKER_SIZE / 2;
+  const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
   const targetTop = Math.min(innerHeight - MARKER_SIZE - 8, innerHeight * 0.40 + card.offsetHeight / 2 + MARKER_GAP);
   cardMarker.style.left = targetLeft + 'px';
   cardMarker.style.top = targetTop + 'px';

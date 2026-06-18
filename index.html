@@ -213,7 +213,7 @@ let activeHotspot = null;
 let zoomTimeout = null;
 
 function positionCardMarker() {
-  const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
+  const targetLeft = innerWidth * 0.5 - MARKER_SIZE / 2;
   const targetTop = Math.min(innerHeight - MARKER_SIZE - 12, innerHeight * 0.40 + card.offsetHeight / 2 + MARKER_GAP);
   cardMarker.style.left = targetLeft + 'px';
   cardMarker.style.top = targetTop + 'px';

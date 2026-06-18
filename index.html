@@ -251,7 +251,9 @@ function animateToOrbit(targetOrbit, hotspot) {
 
   zoomTimeout = setTimeout(() => {
     model.cameraOrbit = targetOrbit;
-    showCard(hotspot);
+    zoomTimeout = setTimeout(() => {
+      showCard(hotspot);
+    }, 450);
   }, 600);
 }
 

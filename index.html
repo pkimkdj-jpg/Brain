@@ -135,6 +135,7 @@ model-viewer#brainModel {
   rotation-per-second="10deg"
   camera-controls
   tone-mapping="neutral"
+  interpolation-decay="150"
   interaction-prompt="none"
   camera-orbit="0deg 75deg 4m"
   camera-target="0m 0m 0m"
@@ -208,6 +209,7 @@ const defaultOrbit = '0deg 75deg 4m';
 const MARKER_SIZE = 140;
 const MARKER_GAP = 80;
 let activeHotspot = null;
+let zoomTimeout = null;
 
 function positionCardMarker() {
   const targetLeft = innerWidth * 0.52 - MARKER_SIZE / 2;
@@ -235,6 +237,24 @@ function dismissCardMarker() {
   cardMarker.removeAttribute('auto-rotate');
 }
 
+function animateToOrbit(targetOrbit, hotspot) {
+  if (zoomTimeout) clearTimeout(zoomTimeout);
+
+  const parts = targetOrbit.split(' ');
+  const azimuth = parts[0];
+  const polar = parts[1];
+  const finalDistance = parseFloat(parts[2]);
+  const pullbackDistance = finalDistance + 1.2;
+  const intermediateOrbit = azimuth + ' ' + polar + ' ' + pullbackDistance + 'm';
+
+  model.cameraOrbit = intermediateOrbit;
+
+  zoomTimeout = setTimeout(() => {
+    model.cameraOrbit = targetOrbit;
+    showCard(hotspot);
+  }, 600);
+}
+
 function showCard(hotspot) {
   cardTitle.textContent = hotspot.getAttribute('data-title') || '';
   cardBody.textContent = hotspot.getAttribute('data-body') || '';
@@ -251,6 +271,7 @@ function hideCard() {
 }
 
 function reset() {
+  if (zoomTimeout) clearTimeout(zoomTimeout);
   model.cameraOrbit = defaultOrbit;
   model.setAttribute('auto-rotate', '');
   activeHotspot = null;
@@ -264,10 +285,11 @@ hotspots.forEach(hotspot => {
     if (activeHotspot === hotspot) {
       reset();
     } else {
+      if (zoomTimeout) clearTimeout(zoomTimeout);
+      hideCard();
       model.removeAttribute('auto-rotate');
-      model.cameraOrbit = orbit;
       activeHotspot = hotspot;
-      showCard(hotspot);
+      animateToOrbit(orbit, hotspot);
     }
   });
 });

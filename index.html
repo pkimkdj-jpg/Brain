@@ -22,11 +22,10 @@ model-viewer#brainModel {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(130, 200, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(130, 200, 255, 0.3);
-  box-shadow: 0 0 20px rgba(130, 200, 255, 0.25), 0 0 50px rgba(130, 200, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   padding: 0;
   position: relative;
   transition: opacity 0.3s ease;
@@ -50,6 +49,17 @@ model-viewer#brainModel {
   font-weight: 700;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   pointer-events: auto;
+}
+.hotspot-label {
+  position: absolute;
+  left: calc(100% + 20px);
+  top: calc(50% + 32px);
+  white-space: nowrap;
+  font-family: -apple-system, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
 }
 .overlay {
   position: fixed;
@@ -136,13 +146,14 @@ model-viewer#brainModel {
   auto-rotate-delay="1000"
   rotation-per-second="10deg"
   camera-controls
+  disable-zoom
   tone-mapping="neutral"
   interpolation-decay="150"
   interaction-prompt="none"
   camera-orbit="0deg 75deg 4m"
   camera-target="0m 0m 0m"
   disable-tap="true"
-  min-camera-orbit="auto auto 2m"
+  min-camera-orbit="auto auto 1.5m"
   max-camera-orbit="auto auto 4m"
   shadow-intensity=".4"
   shadow-softness="1"
@@ -155,8 +166,9 @@ model-viewer#brainModel {
     data-visibility-attribute="visible"
     data-orbit="0deg 100deg 2m"
     data-title="Frontal Lobe"
-    data-body="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
+    data-body="The Frontal Lobe is often called the brain's executive command center. It's structures are often associated with planning, decision-making, problem-solving, self-control, and creative thinking. It helps us weigh consequences and make thoughtful choices. Understanding the frontal lobe helps businesses understand the customer choice. Because this area can be overwhelmed by too many options, simplifying the decision making process can improve outcomes. Brands often offer curated starter packs, which can help reduce cognitive load and make choosing products, goods and services easier on a customer or client.">
     <span class="hotspot-tag">Tap me</span>
+    <span class="hotspot-label">Frontal Lobe</span>
   </button>
 
   <button class="Hotspot" slot="hotspot-2"
@@ -165,8 +177,9 @@ model-viewer#brainModel {
     data-visibility-attribute="visible"
     data-orbit="60deg 60deg 2m"
     data-title="Parietal Lobe"
-    data-body="Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.">
+    data-body="The Parietal Lobe contains the parts of the brain that process sensory information like touch, temperature, pressure, and vibration. It also supports spatial awareness—helping us understand where our body is in relation to the world around us. The parietal lobe is central to User Experience (UX) and physical product design. A product that feels good to hold, or a website that is intuitive to navigate, creates positive sensory and spatial feedback. This can influence a client's viewpoint of product, increasing satisfaction and adoption.">
     <span class="hotspot-tag">Tap me</span>
+    <span class="hotspot-label">Parietal Lobe</span>
   </button>
 
   <button class="Hotspot" slot="hotspot-3"
@@ -175,8 +188,9 @@ model-viewer#brainModel {
     data-visibility-attribute="visible"
     data-orbit="0deg 75deg 1.5m"
     data-title="Temporal Lobe"
-    data-body="Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.">
+    data-body="The Temporal Lobe contains the structures that process sound and supports key functions in the formations of memory. It helps us understand speech, music, and other qualities of sound while also playing a major role in long-term memory. The temporal lobe's connection to sound and memory makes it powerful for branding and recognition. A catchy jingle, signature brand sound, or compelling story can become embedded in a client's memory. This strengthens brand recall and can make it more likely to be chosen later.">
     <span class="hotspot-tag">Tap me</span>
+    <span class="hotspot-label">Temporal Lobe</span>
   </button>
 
   <button class="Hotspot" slot="hotspot-4"
@@ -185,8 +199,20 @@ model-viewer#brainModel {
     data-visibility-attribute="visible"
     data-orbit="200deg 110deg 2m"
     data-title="Occipital Lobe"
-    data-body="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">
+    data-body="The Occipital Lobe is the brain's main visual processing center. It interprets information from the eyes, helping us recognize shapes, colors, and movement. First impressions are often visual, and the occipital lobe is the seat of that response. Strong visuals, packaging design, store layout, or websites can create immediate positive associations. This visual appeal can directly influence a client's mindset before they even interact with a product or service.">
     <span class="hotspot-tag">Tap me</span>
+    <span class="hotspot-label">Occipital Lobe</span>
+  </button>
+
+  <button class="Hotspot" slot="hotspot-5"
+    data-position="-0.15133791675024755m -0.20408247443933836m -0.017788147639660218m"
+    data-normal="-0.3935625262894316m -0.8037286843419246m 0.4462384338744023m"
+    data-visibility-attribute="visible"
+    data-orbit="0deg 110deg 2m"
+    data-title="Limbic System"
+    data-body="While not a true anatomical lobe, the limbic system is a collection of individual structures like the hippocampus and amygdala. It plays a central role in emotion, motivation, memory, and gut feelings. People are wired to make decisions with emotion and justify with logic later. The limbic system is where that emotional response begins. Brands that explore emotional connection—through inspiring marketing, strong service, or a meaningful mission can build loyalty that goes beyond price or features. This emotional bond is central to human-centric business and long-term customer relationships.">
+    <span class="hotspot-tag">Tap me</span>
+    <span class="hotspot-label">Limbic System</span>
   </button>
 
   <div slot="progress-bar"></div>

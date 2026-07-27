@@ -60,22 +60,7 @@ model-viewer#brainModel {
   color: rgba(255, 255, 255, 0.5);
   pointer-events: none;
 }
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 5;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-.overlay.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
+
 .info-card {
   position: fixed;
   top: 40%;
@@ -87,7 +72,7 @@ model-viewer#brainModel {
   overflow-y: auto;
   padding: 60px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -138,7 +123,7 @@ model-viewer#brainModel {
   camera-target="0m 0m 0m"
   disable-tap="true"
   min-camera-orbit="auto auto 1.5m"
-  max-camera-orbit="auto auto 3.6m"
+  max-camera-orbit="auto auto 4m"
   shadow-intensity=".4"
   shadow-softness="1"
   reveal="auto"
@@ -148,7 +133,7 @@ model-viewer#brainModel {
     data-position="0.012401781963188488m 0.409746206926197m 0.4529444967460694m"
     data-normal="-0.946724679814142m 0.3200486604443565m -0.03579435121054289m"
     data-visibility-attribute="visible"
-    data-orbit="0deg 100deg 2m"
+    data-orbit="0deg 100deg 2.8m"
     data-title="Frontal lobe"
     data-body="The frontal lobe is often called the brain's executive command center. Its structures are often associated with planning, decision-making, problem-solving, self-control, and creative thinking. It helps us weigh consequences and make thoughtful choices. Understanding the frontal lobe helps businesses understand the customer choice. Because this area can be overwhelmed by too many options, simplifying the decision-making process can improve outcomes. Brands often offer curated starter packs, which can help reduce cognitive load and make choosing products, goods, and services easier on a customer or client.">
     <span class="hotspot-tag">Tap me</span>
@@ -159,7 +144,7 @@ model-viewer#brainModel {
     data-position="-0.028843040370754497m 0.6171459400421728m -0.01367390218958009m"
     data-normal="0.21954866131212403m 0.9655269342781055m -0.1398432139918739m"
     data-visibility-attribute="visible"
-    data-orbit="60deg 60deg 2m"
+    data-orbit="60deg 60deg 2.8m"
     data-title="Parietal lobe"
     data-body="The parietal lobe contains the parts of the brain that process sensory information like touch, temperature, pressure, and vibration. It also supports spatial awareness—helping us understand where our body is in relation to the world around us. The parietal lobe is central to user experience (UX) and physical product design. A product that feels good to hold, or a website that is intuitive to navigate, creates positive sensory and spatial feedback. This can influence a client's viewpoint of product, increasing satisfaction and adoption.">
     <span class="hotspot-tag">Tap me</span>
@@ -170,7 +155,7 @@ model-viewer#brainModel {
     data-position="0.5065181228253581m 0.10398142542386934m 0.04968649733472076m"
     data-normal="0.896667412786779m 0.18997851731302384m 0.39986962100891027m"
     data-visibility-attribute="visible"
-    data-orbit="0deg 75deg 1.5m"
+    data-orbit="0deg 75deg 2.8m"
     data-title="Temporal lobe"
     data-body="The temporal lobe contains the structures that process sound and supports key functions in the formations of memory. It helps us understand speech, music, and other qualities of sound while also playing a major role in long-term memory. The temporal lobe's connection to sound and memory makes it powerful for branding and recognition. A catchy jingle, signature brand sound, or compelling story can become embedded in a client's memory. This strengthens brand recall and can make it more likely to be chosen later.">
     <span class="hotspot-tag">Tap me</span>
@@ -181,7 +166,7 @@ model-viewer#brainModel {
     data-position="-0.025538709154125094m -0.031100848950056603m -0.6444561738806058m"
     data-normal="0.5179811669506944m -0.12637329827055413m -0.8460054965357012m"
     data-visibility-attribute="visible"
-    data-orbit="200deg 110deg 2m"
+    data-orbit="200deg 110deg 2.8m"
     data-title="Occipital lobe"
     data-body="The occipital lobe is the brain's main visual processing center. It interprets information from the eyes, helping us recognize shapes, colors, and movement. First impressions are often visual, and the occipital lobe is the seat of that response. Strong visuals, packaging design, store layout, or websites can create immediate positive associations. This visual appeal can directly influence a client's mindset before they even interact with a product or service.">
     <span class="hotspot-tag">Tap me</span>
@@ -192,7 +177,7 @@ model-viewer#brainModel {
     data-position="-0.15133791675024755m -0.20408247443933836m -0.017788147639660218m"
     data-normal="-0.3935625262894316m -0.8037286843419246m 0.4462384338744023m"
     data-visibility-attribute="visible"
-    data-orbit="0deg 110deg 2m"
+    data-orbit="0deg 110deg 2.8m"
     data-title="Limbic system"
     data-body="While not a true anatomical lobe, the limbic system is a collection of individual structures like the hippocampus and amygdala. It plays a central role in emotion, motivation, memory, and gut feelings. People are wired to make decisions with emotion and justify with logic later. The limbic system is where that emotional response begins. Brands that explore emotional connection—through inspiring marketing, strong service, or a meaningful mission—can build loyalty that goes beyond price or features. This emotional bond is central to human-centric business and long-term customer relationships.">
     <span class="hotspot-tag">Tap me</span>
